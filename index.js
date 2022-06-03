@@ -1,80 +1,10 @@
 const express = require("express");
 const server = express();
+const mongoClient = require('mongodb').MongoClient;
 
+const MONGO_HOST = 'mongodb://localhost:27017/';
+const MONGO_DB = 'app';
 server.use(express.json());
-
-const playlists = [
-  {
-    id: 1,
-    nome: "Play1",
-    capa: "",
-    musicas: [
-      {
-        id: 3,
-        nome: "Teste3",
-        cantor: "HoliznaCC0",
-        arquivo: "/music/HoliznaCC0-HowCanThingsBe.mp3"
-      },
-      {
-        id: 4,
-        nome: "Teste Folk",
-        cantor: "Scott Holmes Music",
-        arquivo: "/music/HoliznaCC0 - Lost In The City.mp3"
-      }
-    ]
-  },
-  {
-    id: 2,
-    nome: "Play2",
-    capa: "",
-    musicas: [
-      {
-        id: 1,
-        nome: "Teste",
-        cantor: "HoliznaCC0",
-        arquivo: "/music/HoliznaCC0-HowCanThingsBe.mp3"
-      },
-      {
-        id: 2,
-        nome: "Sensual Folk",
-        cantor: "Scott Holmes Music",
-        arquivo: "/music/HoliznaCC0 - Lost In The City.mp3"
-      }
-    ]
-  }
-];
-
-const usuarios = [
-  {
-    nome: "ezequielss",
-    senha: 123456,
-    email: "es@g.com",
-    data: "2022-05-04",
-    id: 1
-  },
-  {
-    nome: "Ezequiel Sousa",
-    senha: "123456",
-    email: "teste@g.com",
-    data: "1995-04-17",
-    id: 2
-  }
-];
-
-const musicas = [
-  {
-    id: 1,
-    nome: "Teste",
-    cantor: "HoliznaCC0",
-    arquivo: "/music/HoliznaCC0-HowCanThingsBe.mp3"
-  },
-  {
-    id: 2,
-    nome: "Sensual Folk",
-    cantor: "Scott Holmes Music",
-    arquivo: "/music/HoliznaCC0 - Lost In The City.mp3"
-  }
-];
 
 server.get("/", (req, res) => {
   res.write("O servidor Umusic esta rodando!");
@@ -84,7 +14,14 @@ server.listen(4000);
 
 //listar playlists
 server.get("/playlists", (req, res) => {
-  return res.json(playlists);
+  mongoClient.connect(MONGO_HOST, (err, client) => {
+    if (err) throw err
+    const database = client.db(MONGO_DB);
+    database.collection(MONGO_COLLECTION).find({}).toArray((err, result) => {
+      if (err) throw err
+      res.json(result);
+    });
+  });
 });
 
 //buscar playlist por ID
