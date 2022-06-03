@@ -1,29 +1,28 @@
 const express = require("express");
+const cors = require("cors");
 const server = express();
 const mongoClient = require('mongodb').MongoClient;
 
 const MONGO_HOST = "mongodb+srv://admin:PPtkOKzu7YmpUvMb@cluster0.ucyz0.mongodb.net/?retryWrites=true&w=majority";
 const MONGO_DB = 'Umusic';
 server.use(express.json());
-
-server.get("/", (req, res) => {
-  res.write("O servidor Umusic esta rodando!");
-});
+server.use(cors());
 
 server.listen(4000);
 
+//READ PLAYLISTS - TRAZ TODAS AS PLAYLISTS
 //listar playlists
 server.get("/playlists", (req, res) => {
   mongoClient.connect(MONGO_HOST, (err, client) => {
     if (err) throw err
     const database = client.db(MONGO_DB);
-    database.collection(playlists).find({}).toArray((err, result) => {
+    database.collection('playlists').find({}).toArray((err, result) => {
       if (err) throw err
       res.json(result);
     });
   });
 });
-
+/*
 //buscar playlist por ID
 server.get("/playlists/:id", (req, res) => {
   const { id } = req.params;
@@ -31,6 +30,7 @@ server.get("/playlists/:id", (req, res) => {
   const playlist = playlists.find((p) => p.id == id); //confirma usuário por e-mail
   return res.json(playlist);
 });
+
 
 //Editar playlist - INCOMPLETO
 server.put("/playlists/:id", (req, res) => {
@@ -61,14 +61,22 @@ server.delete("/playlists/:id", (req, res) => {
 
   return res.send();
 }); // retorna os dados após exclusão
+*/
 
 //cadastrar usuário
 server.post("/usuarios", (req, res) => {
-  const user = req.body;
-  usuarios.push(user);
-  return res.json(user); // retorna a informação da variável geeks
+  mongoClient.connect(MONGO_HOST, (err, client) => {
+    if (err) throw err
+    const database = client.db(MONGO_DB);
+    database.collection('usuarios').insertOne(req.body, (err, result) => {
+      if (err) throw err
+      res.status(201).json(result);
+    });
+  });
 });
 
+
+/*
 //login (buscarUsuario)
 server.get("/usuarios", (req, res) => {
   const { email } = req.query;
@@ -99,4 +107,4 @@ server.get("/musicas", (req, res) => {
 //retornar todas as músicas
 server.get("/musicas", (req, res) => {
   return res.json(musicas);
-});
+});*/
