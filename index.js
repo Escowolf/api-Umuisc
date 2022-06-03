@@ -2,8 +2,8 @@ const express = require("express");
 const server = express();
 const mongoClient = require('mongodb').MongoClient;
 
-const MONGO_HOST = 'mongodb://localhost:27017/';
-const MONGO_DB = 'app';
+const MONGO_HOST = "mongodb+srv://admin:PPtkOKzu7YmpUvMb@cluster0.ucyz0.mongodb.net/?retryWrites=true&w=majority";
+const MONGO_DB = 'Umusic';
 server.use(express.json());
 
 server.get("/", (req, res) => {
@@ -17,7 +17,7 @@ server.get("/playlists", (req, res) => {
   mongoClient.connect(MONGO_HOST, (err, client) => {
     if (err) throw err
     const database = client.db(MONGO_DB);
-    database.collection(MONGO_COLLECTION).find({}).toArray((err, result) => {
+    database.collection(playlists).find({}).toArray((err, result) => {
       if (err) throw err
       res.json(result);
     });
