@@ -22,6 +22,18 @@ server.get("/playlists", (req, res) => {
     });
   });
 });
+
+server.get("/playlists", (req, res) => {
+  mongoClient.connect(MONGO_HOST, (err, client) => {
+    if (err) throw err
+    const database = client.db(MONGO_DB);
+    //busca dentro da collection usuarios o que ele recebeu exatamente de consulta no front
+    database.collection('playlists').find({ cod: req.query.cod }).toArray((err, result) => {
+      if (err) throw err
+      res.json(result);
+    });
+  });
+});
 /*
 //buscar playlist por ID
 server.get("/playlists/:id", (req, res) => {
@@ -78,16 +90,20 @@ server.post("/usuarios", (req, res) => {
   });
 });
 
-
-/*
 //login (buscarUsuario)
 server.get("/usuarios", (req, res) => {
-  const { email } = req.query;
-
-  const usuario = usuarios.find((u) => u.email == email); //confirma usuário por e-mail
-  return res.json(usuario);
+  mongoClient.connect(MONGO_HOST, (err, client) => {
+    if (err) throw err
+    const database = client.db(MONGO_DB);
+    //busca dentro da collection usuarios o que ele recebeu exatamente de consulta no front
+    database.collection('usuarios').find({ cod: req.query.cod }).toArray((err, result) => {
+      if (err) throw err
+      res.send(result);
+    });
+  });
 });
 
+/*
 //Editar Usuario
 server.patch("/usuarios/:id", (req, res) => {
   const { id } = req.params; // recupera o index com os dados
