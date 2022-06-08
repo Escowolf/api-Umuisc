@@ -63,6 +63,9 @@ server.delete("/playlists/:id", (req, res) => {
 }); // retorna os dados após exclusão
 */
 
+// usuarios representa a collection onde o novo registro será inserido
+// insertOne é uma operação própria do MongoDB para inserir apenas 1 registro
+// mongo_host é o servidor onde nosso banco está armazenado
 //cadastrar usuário
 server.post("/usuarios", (req, res) => {
   mongoClient.connect(MONGO_HOST, (err, client) => {
