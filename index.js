@@ -23,7 +23,7 @@ server.get("/playlists", (req, res) => {
   });
 });
 
-server.get("/playlists", (req, res) => {
+server.get("/playlists/:_id", (req, res) => {
   mongoClient.connect(MONGO_HOST, (err, client) => {
     if (err) throw err
     const database = client.db(MONGO_DB);
@@ -78,6 +78,7 @@ server.delete("/playlists/:id", (req, res) => {
 // usuarios representa a collection onde o novo registro será inserido
 // insertOne é uma operação própria do MongoDB para inserir apenas 1 registro
 // mongo_host é o servidor onde nosso banco está armazenado
+//FUNCIONA CHECADO
 //cadastrar usuário
 server.post("/usuarios", (req, res) => {
   mongoClient.connect(MONGO_HOST, (err, client) => {
@@ -90,6 +91,7 @@ server.post("/usuarios", (req, res) => {
   });
 });
 
+//FUNCIONA CHECADO
 //login (buscarUsuario)
 server.get("/usuarios", (req, res) => {
   mongoClient.connect(MONGO_HOST, (err, client) => {
@@ -102,28 +104,41 @@ server.get("/usuarios", (req, res) => {
     });
   });
 });
-
 /*
+
 //Editar Usuario
-server.patch("/usuarios/:id", (req, res) => {
-  const { id } = req.params; // recupera o index com os dados
-  const { nome } = req.body; //atualiza apenas o nome do usário de id correspondente
-
-  const usuario = usuarios.find((u) => u.id == id); //busca se há usuário com esse id
-
-  usuario.nome = nome; // sobrepõe o index obtido na rota de acordo com o novo valor
+server.put("/usuarios/:_id", (req, res) => {
+  //const { id } = req.params; // recupera o index com os dados
+  //const { nome } = req.body; //atualiza apenas o nome do usário de id correspondente
+  mongoClient.connect(MONGO_HOST, (err, client) => {
+    if (err) throw err
+    console.log(err);
+    const database = client.db(MONGO_DB);
+    database.collection('usuarios').updateOne({ cod: req.query.cod }, { $set: req.query }, (err) => {
+      if (err) throw err
+      res.json();
+    });
+  });
+ // usuario.nome = nome; // sobrepõe o index obtido na rota de acordo com o novo valor
 
   return res.json(usuarios);
-}); // retorna novamente os geeks atualizados após o update
-
+}); 
 //Buscar música por nome
 server.get("/musicas", (req, res) => {
   const { nome } = req.query;
   const musicaEncontrada = musicas.find((m) => m.nome == nome);
   return res.json(musicaEncontrada);
 });
-
+*/
+//FUNCIONA CHECADO
 //retornar todas as músicas
 server.get("/musicas", (req, res) => {
-  return res.json(musicas);
-});*/
+  mongoClient.connect(MONGO_HOST, (err, client) => {
+    if (err) throw err
+    const database = client.db(MONGO_DB);
+    database.collection('musicas').find({}).toArray((err, result) => {
+      if (err) throw err
+      res.json(result);
+    });
+  });
+});
