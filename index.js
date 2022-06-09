@@ -22,19 +22,19 @@ server.get("/playlists", (req, res) => {
     });
   });
 });
-
+/*
 server.get("/playlists/:_id", (req, res) => {
   mongoClient.connect(MONGO_HOST, (err, client) => {
     if (err) throw err
     const database = client.db(MONGO_DB);
-    //busca dentro da collection usuarios o que ele recebeu exatamente de consulta no front
-    database.collection('playlists').find({ cod: req.query.cod }).toArray((err, result) => {
+    const { _id } = req.params;
+    database.collection('playlists').find((p)=> p._id == _id).toArray((err, result) => {
       if (err) throw err
       res.json(result);
     });
   });
 });
-/*
+
 //buscar playlist por ID
 server.get("/playlists/:id", (req, res) => {
   const { id } = req.params;
@@ -100,29 +100,38 @@ server.get("/usuarios", (req, res) => {
     //busca dentro da collection usuarios o que ele recebeu exatamente de consulta no front
     database.collection('usuarios').find({ cod: req.query.cod }).toArray((err, result) => {
       if (err) throw err
-      res.send(result);
+      res.json(result);
     });
   });
 });
-/*
+
 
 //Editar Usuario
 server.put("/usuarios/:_id", (req, res) => {
-  //const { id } = req.params; // recupera o index com os dados
+  const { _id } = req.params;
+  
   //const { nome } = req.body; //atualiza apenas o nome do usário de id correspondente
   mongoClient.connect(MONGO_HOST, (err, client) => {
     if (err) throw err
-    console.log(err);
     const database = client.db(MONGO_DB);
-    database.collection('usuarios').updateOne({ cod: req.query.cod }, { $set: req.query }, (err) => {
+    database.collection('usuarios').updateOne({ "_id": _id  }, { $set: req.query }, (err) => {
       if (err) throw err
       res.json();
-    });
   });
- // usuario.nome = nome; // sobrepõe o index obtido na rota de acordo com o novo valor
+});
+}); 
+
+/*
+server.patch("/usuarios/:id", (req, res) => {
+  const { id } = req.params; // recupera o index com os dados
+  const { nome } = req.body; //atualiza apenas o nome do usário de id correspondente
+
+  const usuario = usuarios.find((u) => u.id == id); //busca se há usuário com esse id
+
+  usuario.nome = nome; // sobrepõe o index obtido na rota de acordo com o novo valor
 
   return res.json(usuarios);
-}); 
+
 //Buscar música por nome
 server.get("/musicas", (req, res) => {
   const { nome } = req.query;
