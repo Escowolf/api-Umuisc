@@ -110,7 +110,7 @@ server.get("/usuarios", (req, res) => {
 server.put("/usuarios/:_id", (req, res) => {
   const { _id } = req.params;
   
-  //const { nome } = req.body; //atualiza apenas o nome do usário de id correspondente
+//const { nome } = req.body; //atualiza apenas o nome do usário de id correspondente
   mongoClient.connect(MONGO_HOST, (err, client) => {
     if (err) throw err
     const database = client.db(MONGO_DB);
